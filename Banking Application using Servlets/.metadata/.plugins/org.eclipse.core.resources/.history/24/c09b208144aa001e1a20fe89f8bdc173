@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h2>Please enter your new password</h2>
+<form action="ChangePassword">
+		<label>New Password</label>
+		<input type="password" name="npwd"/><br><br>
+		
+		<label>Confirm Password</label>
+		<input type="password" name="cpwd"/><br><br>
+		
+		<input type="submit"/>
+	</form>
+	<script>
+        document.getElementById("changePasswordForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Make an asynchronous request to the server
+            var req = new XMLHttpRequest();
+            req.open("POST", "/BankingApplication_Servlets/ChangePassword", true);
+            req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            req.onreadystatechange = function() {
+                if (req.readyState == 4 && req.status == 200) {
+                    var jsonResponse = JSON.parse(req.responseText);
+
+                    // Show a pop-up based on the status
+                    if (jsonResponse.status === "success") {
+                        alert("Password change successful!");
+                    } else {
+                        alert("Password change failed.");
+                    }
+                }
+            };
+            var formData = new FormData(document.getElementById("changePasswordForm"));
+            req.send(formData);
+        });
+     </script>
+</body>
+</html>

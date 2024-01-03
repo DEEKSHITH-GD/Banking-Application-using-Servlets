@@ -1,0 +1,157 @@
+package com.destination.model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Random;
+
+public class Model {
+	private String name;
+	private String custid;
+	private int accno;
+	private String pwd;
+	private int bal;
+	private String email;
+	private int raccno;//receiver accno
+	
+	private Connection con;
+	private PreparedStatement pstmt;
+	private ResultSet res;
+	public ArrayList al = new ArrayList();
+	public ArrayList sal = new ArrayList();
+	public ArrayList ral = new ArrayList();
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getCustid() {
+		return custid;
+	}
+	public void setCustid(String custid) {
+		this.custid = custid;
+	}
+	public int getAccno() {
+		return accno;
+	}
+	public void setAccno(int accno) {
+		this.accno = accno;
+	}
+	public String getPwd() {
+		return pwd;
+	}
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	public int getBal() {
+		return bal;
+	}
+	public void setBal(int bal) {
+		this.bal = bal;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public int getRaccno() {
+		return raccno;
+	}
+	public void setRaccno(int raccno) {
+		this.raccno = raccno;
+	}
+	
+	public Model() throws Exception {
+		Class.forName("com.mysql.jdbc.Driver");//Loading the driver
+		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Destination_BankProject", "root", "ROOT");
+		System.out.println("Loading the driver and establishing the connection is completed");
+	}
+	
+	public boolean register() {
+		try {
+		String s = "insert into Destination_Bank_users values(?,?,?,?,?,?)";//Incomplete query
+		pstmt = con.prepareStatement(s);
+		pstmt.setString(1, name);
+		pstmt.setString(2, custId());
+		pstmt.setInt(3, accno());
+		pstmt.setString(4, pwd);
+		pstmt.setInt(5, bal);
+		pstmt.setString(6, email);
+		
+		int x = pstmt.executeUpdate();
+		
+		if(x>0) {
+			return true;
+		}
+		return false;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	private static final String digits = "0123456789";
+	private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	public String custId() {
+		StringBuilder id = new StringBuilder("DEST");
+		for(int i=0; i<4; i++) {
+			char digit = digits.charAt(new Random().nextInt(digits.length()));
+			id.append(digit);
+		}
+		for(int i=0; i<4; i++) {
+			char alpha =  characters.charAt(new Random().nextInt(characters.length())); 
+			id.append(alpha);
+		}
+		return id.toString();
+	}
+	public int accno() {
+		int accountNo = new Random().nextInt(2147483647 - 1000000000 + 1) + 1000000000; 
+		return accountNo;
+	}
+	
+	public boolean login() throws SQLException {
+		String s = "select * from Destination_Bank_users where custid=? and password=?";
+		pstmt = con.prepareStatement(s);
+		pstmt.setString(1, custid);
+		pstmt.setString(2, pwd);
+		
+		ResultSet res = pstmt.executeQuery();
+		
+		while(res.next()==true) {
+			accno = res.getInt("ACCNO");
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean checkBalance() throws SQLException {
+		String s = "select balance from Destination_Bank_users where accno=?";
+		pstmt = con.prepareStatement(s);
+		pstmt.setInt(1, accno);
+		ResultSet res = pstmt.executeQuery();
+		while(res.next()==true) {
+			bal = res.getInt("BALANCE");
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean changePwd() throws SQLException {
+		String s = "update DestBank set password=? where accno=?";
+		pstmt = con.prepareStatement(s);
+		pstmt.setString(1, pwd);
+		pstmt.setInt(2, accno);
+		int x = pstmt.executeUpdate();
+		if(x>0) {
+			return true;
+		}
+		return false;
+	}
+}

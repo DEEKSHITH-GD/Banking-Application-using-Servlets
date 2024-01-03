@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Success Page</title>
+</head>
+<body>
+	<script>
+        // JavaScript code to create a pop-up message
+        window.onload = function() {
+            alert('Password Changed!');
+        };
+    </script>
+</body>
+</html>

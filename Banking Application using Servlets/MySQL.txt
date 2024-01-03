@@ -1,0 +1,19 @@
+CREATE DATABASE `destination_bankproject` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+CREATE TABLE `destination_bank_users` (
+  `name` varchar(30) NOT NULL,
+  `custid` varchar(30) NOT NULL,
+  `accno` int NOT NULL,
+  `password` varchar(10) CHARACTER SET utf16 COLLATE utf16_bin NOT NULL,
+  `balance` int NOT NULL,
+  `email` varchar(60) NOT NULL,
+  UNIQUE KEY `custid` (`custid`),
+  UNIQUE KEY `accno` (`accno`),
+  CONSTRAINT `Destination_BankProject_chk_1` CHECK ((`password` <> _utf8mb4''))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `getstatement` (
+  `saccno` int DEFAULT NULL,
+  `raccno` int DEFAULT NULL,
+  `amount` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
